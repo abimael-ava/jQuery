@@ -12,11 +12,44 @@
     <h1>UInames examples</h1>
 
     <h2>Users</h2>
-
     <input type="number" id="amount" placeholder="Numero de usuarios">
-    <ul id="users">
+    
 
+
+    <div>
+        
+        <label>Male</label>
+        <input type="radio" name="gender" id="male">
+        <label>Female</label>
+        <input type="radio" name="gender" id="female">
+        <label>Male</label>
+        <input type="radio" name="gender" id="random">
+        <label>Random</label>
+
+    </div>
+
+    <div>
+        <label for="region">Region</label>
+        <select name="region" id="region">
+            <option>None</option>
+            <option>France</option>
+            <option>Germany</option>
+            <option>India</option>
+            <option>Russia</option>
+            <option>Mexico</option>
+            <option>Random</option>
+        </select>
+    </div>
+
+    <div>
+        <label>Data Extra</label>
+        <input type="checkbox" id="extra">
+    </div>
+
+    <ul id="users"></ul>
     </ul>
+
+    <p class="errors"></p>
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous">
@@ -24,18 +57,41 @@
         </script>
 
     <script>
+        var gener="";
+        $('input[type=radio]').on('click',function(){
+            //console.log($(this).attr('id'));
+            gender = $(this).attr('id');
+        });
+
+
         $('#amount').on('keypress', function () {
             if (event.which == 13) {
                 $('#users').html("");
+                var amount = $('#amount').val();
+                $('#amount').val("");
+                $('.errors').val('');
+
+                var region = $('#region').val();
+                var urlString = "https://uinames.com/api/?amount=" + amount 
+                    + "&gender="+ gender 
+                    +"&region=" + region;
+                    var extra =$('#extra').prop('checked');
+                    if(extra){
+                        urlString += "&ext";
+                        //Mostrar la edad, foto de perfil y correo
+                    }
+
                 jQuery.ajax({
                     method: "GET",
-                    url: "https://uinames.com/api/?amount=" + $('#amount').val() + "&region=mexico",
+                    url: urlString,
                     success: function (data) {
+
                         //console.log(data);
-                        if ($('#amount').val() == 1) {
-                            $('#users').append('<li>' + data.name + ' ' + data.surname + '</li>')
+                        if (amount == 1) {
+                            $('#users').append('<li>' + data.name + ' ' + data.surname 
+                                + '<img src = "' + data.photo + '">' + '</li>')
                         }
-                        else {
+                        else if(amount > 1){
                             var i, user;
                             for (i = 0; i < data.length; i++) {
                                 user = data[i];
@@ -43,13 +99,17 @@
                                 $('#users').append('<li>' + user.name + ' ' + user.surname + '</li>')
                             }
                         }
+                        
                     },
                     error: function(data){
-                        console-log('There is something wrong !!!');
-                        console.log(data);
+                        $('.errors').text(data.responseJSON.error);
+                        $('.errors').css('color','red');
+
+                        /*console-log('There is something wrong !!!');
+                        console.log(data);*/
                     }
                 })
-                $('#amount').val("");
+                
             }
         });
 
