@@ -88,18 +88,31 @@
 
                         //console.log(data);
                         if (amount == 1) {
+                            if(extra){
                             $('#users').append('<li>' + data.name + ' ' + data.surname 
+                                + ' '+ data.age + ' ' + data.email 
                                 + '<img src = "' + data.photo + '">' + '</li>')
+                            }
+                            else
+                            {
+                                $('#users').append('<li>' + data.name + ' ' + data.surname  + '</li>')
+                            }
                         }
                         else if(amount > 1){
                             var i, user;
-                            for (i = 0; i < data.length; i++) {
-                                user = data[i];
-                                //console.log(user);
-                                $('#users').append('<li>' + user.name + ' ' + user.surname + '</li>')
+                            if(extra){
+                                for (i = 0; i < data.length; i++) {
+                                    user = data[i];
+                                    //console.log(user);
+                                    $('#users').append('<li>' + data.name + ' ' + data.surname 
+                                    + ' '+ data.age + ' ' + data.email 
+                                    + '<img src = "' + data.photo + '">' + '</li>')
+                                }
+                            }
+                            else{
+                                $('#users').append('<li>' + data.name + ' ' + data.surname + '</li>')
                             }
                         }
-                        
                     },
                     error: function(data){
                         $('.errors').text(data.responseJSON.error);
